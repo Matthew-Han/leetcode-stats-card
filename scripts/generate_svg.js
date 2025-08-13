@@ -7,6 +7,9 @@ const OUT_DIR = path.resolve(process.cwd(), 'stats');
 const OUT_FILE = path.join(OUT_DIR, `${USER}.svg`);
 const GQL_URL = 'https://leetcode.cn/graphql';
 
+console.log('Using LEETCODE_SESSION:', process.env.LEETCODE_SESSION ? 'set' : 'not set');
+console.log('Using LEETCODE_CSRF_TOKEN:', process.env.LEETCODE_CSRF_TOKEN ? 'set' : 'not set');
+
 function esc(s) {
     if (s === null || s === undefined) return '';
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
