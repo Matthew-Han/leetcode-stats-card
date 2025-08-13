@@ -25,7 +25,7 @@ jobs:
         env:
           LEETCODE_USERNAME: 'matthewhan'
         run: |
-          node YOUR_JS_FILE_NAME.js
+          node generate-svg.js # 这里替换成你实际的文件名
           echo "Stats SVG generated for user ${LEETCODE_USERNAME}"
 
       - name: Commit and push changes
