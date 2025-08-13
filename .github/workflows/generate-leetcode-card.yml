@@ -2,41 +2,32 @@ name: Generate LeetCode Stats SVG
 
 on:
   schedule:
-    # 每天凌晨1点运行一次，可以根据需要修改
     - cron: '0 1 * * *'
-  # 允许手动触发
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 1. 检出代码
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 安装 Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        # 移除 'cache: npm' 这一行
         with:
           node-version: '20'
-          cache: 'npm' # 使用缓存加速依赖安装
 
-      # 3. 安装依赖
       - name: Install dependencies
         run: npm install
 
-      # 4. 生成 SVG
       - name: Generate LeetCode SVG
-        # 只保留需要的环境变量，即用户名
         env:
           LEETCODE_USERNAME: 'matthewhan'
         run: |
-          node YOUR_JS_FILE_NAME.js # 确保这里的文件名和你的js文件匹配
-          # 你也可以使用 npm run generate，前提是你的 package.json 中配置了 generate 命令
+          node YOUR_JS_FILE_NAME.js
           echo "Stats SVG generated for user ${LEETCODE_USERNAME}"
 
-      # 5. 提交 SVG 更改
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
