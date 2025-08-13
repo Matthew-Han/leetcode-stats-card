@@ -8,19 +8,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      # 1. Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # 禁用默认 token
 
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        # 移除 'cache: npm' 这一行
         with:
           node-version: '20'
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm install
 
+      # 4. Generate LeetCode SVG
       - name: Generate LeetCode SVG
         env:
           LEETCODE_USERNAME: 'matthewhan'
@@ -29,10 +35,18 @@ jobs:
           node scripts/generate_svg.js
           echo "Stats SVG generated for user ${LEETCODE_USERNAME} with theme ${THEME}"
 
+      # 5. Commit & push only if SVG changed
       - name: Commit and push changes
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "matthew-han"
+          git config user.email "837204579@qq.com"
           git add stats
-          git diff-index --quiet HEAD || git commit -m "chore: update leetcode stats svg"
-          git push
+          # 检查 stats 文件夹是否有变更
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update leetcode stats svg"
+            git push https://${PAT_TOKEN}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
+          else
+            echo "No changes in SVG, skipping commit."
+          fi
