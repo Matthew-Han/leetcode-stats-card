@@ -2,7 +2,7 @@ name: Generate LeetCode Stats SVG
 
 on:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '* * * * *'
   workflow_dispatch:
 
 jobs:
@@ -24,9 +24,10 @@ jobs:
       - name: Generate LeetCode SVG
         env:
           LEETCODE_USERNAME: 'matthewhan'
+          THEME: 'light'
         run: |
-          node scripts/generate_svg.js # 这里替换成你实际的文件名
-          echo "Stats SVG generated for user ${LEETCODE_USERNAME}"
+          node scripts/generate_svg.js
+          echo "Stats SVG generated for user ${LEETCODE_USERNAME} with theme ${THEME}"
 
       - name: Commit and push changes
         run: |

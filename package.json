@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "generate": "node scripts/generate_svg.js"
+    "generate": "node scripts/generate_svg.js",
+    "generate:light": "THEME=light node scripts/generate_svg.js",
+    "generate:dark": "THEME=dark node scripts/generate_svg.js",
+    "generate:nord": "THEME=nord node scripts/generate_svg.js"
   },
   "dependencies": {
+    "leetcode-query": "^2.0.1",
     "node-fetch": "^3.3.2"
   }
 }
-
