@@ -1,0 +1,43 @@
+name: Generate LeetCode SVG
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # 每小时运行一次（按需修改）
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate SVG
+        env:
+          # 默认用户名（已设置为你给的用户名）
+          LEETCODE_USERNAME: 'matthewhan'
+        run: |
+          npm run generate
+
+      - name: Commit SVG (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats/*.svg || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update leetcode svg [skip ci]" || echo "commit failed"
+            git push
+          fi
+

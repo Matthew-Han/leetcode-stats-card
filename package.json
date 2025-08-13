@@ -1,0 +1,12 @@
+{
+  "name": "leetcode-stats-card",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate_svg.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.4.2"
+  }
+}
+
