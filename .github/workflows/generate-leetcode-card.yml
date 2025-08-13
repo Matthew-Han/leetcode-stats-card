@@ -1,46 +1,46 @@
-name: Generate LeetCode SVG
+name: Generate LeetCode Stats SVG
 
 on:
   schedule:
-    - cron: '0 * * * *'   # 每小时运行一次（按需修改）
+    # 每天凌晨1点运行一次，可以根据需要修改
+    - cron: '0 1 * * *'
+  # 允许手动触发
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # 1. 检出代码
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
+      # 2. 安装 Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm' # 使用缓存加速依赖安装
 
+      # 3. 安装依赖
       - name: Install dependencies
         run: npm install
 
-      - name: Generate SVG
+      # 4. 生成 SVG
+      - name: Generate LeetCode SVG
+        # 只保留需要的环境变量，即用户名
         env:
           LEETCODE_USERNAME: 'matthewhan'
-          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
-          LEETCODE_CSRF_TOKEN: ${{ secrets.LEETCODE_CSRF_TOKEN }}
         run: |
-          npm run generate
-          echo "List stats directory:"
-          ls -al stats || echo "stats directory not found"
+          node YOUR_JS_FILE_NAME.js # 确保这里的文件名和你的js文件匹配
+          # 你也可以使用 npm run generate，前提是你的 package.json 中配置了 generate 命令
+          echo "Stats SVG generated for user ${LEETCODE_USERNAME}"
 
-      - name: Commit SVG (if changed)
+      # 5. 提交 SVG 更改
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add stats || true
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: update leetcode svg [skip ci]" || echo "commit failed"
-            git push
-          fi
-
+          git add stats
+          git diff-index --quiet HEAD || git commit -m "chore: update leetcode stats svg"
+          git push
