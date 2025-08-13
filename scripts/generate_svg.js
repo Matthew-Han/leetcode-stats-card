@@ -2,7 +2,6 @@ import fetch from 'node-fetch';
 import fs from 'fs/promises';
 import path from 'path';
 
-// 从环境变量或默认值获取用户名
 const USERNAME = process.env.LEETCODE_USERNAME || 'matthewhan';
 const OUT_DIR = path.resolve(process.cwd(), 'stats');
 const OUT_FILE = path.join(OUT_DIR, `${USERNAME}.svg`);
@@ -36,28 +35,16 @@ async function fetchWithRetry(url, opts = {}, retries = 3, backoff = 800) {
     }
 }
 
-// 获取用户公开数据（无需登录信息）
-async function getUserPublicData(username) {
+// 新的 GraphQL 查询，仅获取用户提交统计（更稳定）
+async function getUserSubmissionStats(username) {
     const body = {
-        query: `query userProfilePublicProfile($username: String!) {
+        query: `query userSolutionStats($username: String!) {
             matchedUser(username: $username) {
-                userCalendar {
-                    streak
-                    activeDays
-                }
                 submitStats {
                     acSubmissionNum {
                         difficulty
                         count
-                        submissions
                     }
-                }
-                recentSubmissionList(username: $username) {
-                    title
-                    titleSlug
-                    timestamp
-                    statusDisplay
-                    lang
                 }
             }
         }`,
@@ -70,7 +57,7 @@ async function getUserPublicData(username) {
             'Content-Type': 'application/json',
             'Origin': 'https://leetcode.cn',
             'Referer': `https://leetcode.cn/u/${username}/`,
-            'User-Agent': 'Mozilla/5.0 (compatible; LeetCode-Stats-Card/2.0)'
+            'User-Agent': 'Mozilla/5.0 (compatible; LeetCode-Stats-Card/3.0)'
         },
         body: JSON.stringify(body)
     }, 3, 600);
@@ -85,28 +72,14 @@ async function getUserPublicData(username) {
 // 构建SVG图像
 function buildSVG(userData) {
     const { acSubmissionNum } = userData.submitStats;
-    const recentSubmissions = userData.recentSubmissionList || [];
 
     const easy = acSubmissionNum.find(d => d.difficulty === 'Easy')?.count || 0;
     const medium = acSubmissionNum.find(d => d.difficulty === 'Medium')?.count || 0;
     const hard = acSubmissionNum.find(d => d.difficulty === 'Hard')?.count || 0;
     const total = easy + medium + hard;
 
-    let recentListSVG = '';
-    if (recentSubmissions.length > 0) {
-        recentListSVG = `
-            <text x="10" y="140" font-size="14" font-weight="bold">最近提交:</text>
-            ${recentSubmissions.slice(0, 5).map((sub, index) => `
-                <text x="20" y="${160 + index * 20}" font-size="12">
-                    <tspan>${esc(sub.title)}</tspan>
-                    <tspan fill="#4CAF50" font-weight="bold" dx="10">${esc(sub.statusDisplay)}</tspan>
-                </text>
-            `).join('')}
-        `;
-    }
-
     return `
-        <svg width="400" height="280" xmlns="http://www.w3.org/2000/svg" style="font-family: sans-serif;">
+        <svg width="400" height="150" xmlns="http://www.w3.org/2000/svg" style="font-family: sans-serif;">
             <style>
                 .title { font-size: 18px; font-weight: bold; }
                 .label { font-size: 14px; }
@@ -127,12 +100,9 @@ function buildSVG(userData) {
             
             <text x="10" y="120" class="label">困难:</text>
             <text x="60" y="120" class="value" fill="#F44336">${hard}</text>
-
-            ${recentListSVG}
         </svg>
     `;
 }
-
 
 // 确保输出目录存在
 async function ensureOutDir(dir) {
@@ -164,10 +134,8 @@ async function main() {
     try {
         await ensureOutDir(OUT_DIR);
         console.log(`Fetching data for user: ${USERNAME}`);
-        const userData = await getUserPublicData(USERNAME);
-
-        // 这里的userData包含了你所说的所有信息
-        // console.log(JSON.stringify(userData, null, 2)); // 调试用，可以打印出完整的API返回数据
+        // 使用新的函数
+        const userData = await getUserSubmissionStats(USERNAME);
 
         const svgContent = buildSVG(userData);
         await writeIfChanged(OUT_FILE, svgContent);
