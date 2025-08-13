@@ -45,7 +45,7 @@ jobs:
           git add stats
           if ! git diff --cached --quiet; then
             git commit -m "chore: update leetcode stats svg"
-            git push https://${PAT}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
+            git push https://${PAT_TOKEN}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
           else
             echo "No changes in SVG, skipping commit."
           fi
