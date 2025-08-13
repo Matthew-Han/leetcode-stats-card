@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # 禁用默认 token
+          persist-credentials: false  # 禁用默认 GITHUB_TOKEN
 
       # 2. Setup Node.js
       - name: Setup Node.js
@@ -38,15 +38,14 @@ jobs:
       # 5. Commit & push only if SVG changed
       - name: Commit and push changes
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT }}
         run: |
           git config user.name "matthew-han"
           git config user.email "837204579@qq.com"
           git add stats
-          # 检查 stats 文件夹是否有变更
           if ! git diff --cached --quiet; then
             git commit -m "chore: update leetcode stats svg"
-            git push https://${PAT_TOKEN}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
+            git push https://${PAT}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
           else
             echo "No changes in SVG, skipping commit."
           fi
