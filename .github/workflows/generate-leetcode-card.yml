@@ -24,10 +24,10 @@ jobs:
 
       - name: Generate SVG
         env:
-          # 默认用户名（已设置为你给的用户名）
           LEETCODE_USERNAME: 'matthewhan'
-        run: |
-          npm run generate
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          LEETCODE_CSRF_TOKEN: ${{ secrets.LEETCODE_CSRF_TOKEN }}
+        run: npm run generate
 
       - name: Commit SVG (if changed)
         run: |
