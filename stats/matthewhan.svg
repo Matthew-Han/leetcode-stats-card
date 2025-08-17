@@ -27,7 +27,7 @@
         <circle cx="40" cy="40" r="40" fill="none" stroke="#e5e5e5" stroke-width="6"/>
         <circle cx="40" cy="40" r="40" fill="none" stroke="#ffa116" stroke-width="6" 
                 stroke-dasharray="251.32741228718345" 
-                stroke-dashoffset="191.4017072550675"
+                stroke-dashoffset="191.41652567866595"
                 transform="rotate(-90 40 40)" stroke-linecap="round"/>
         <text x="40" y="40" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">964</text>
     </g>
@@ -45,9 +45,9 @@
         <!-- Medium -->
         <g transform="translate(0, 40)">
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Medium</text>
-            <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">488 / 2101</text>
+            <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">488 / 2102</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="69.68110423607806" y2="10" stroke="#f0ad4e" stroke-width="4" stroke-dasharray="69.68110423607806 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="69.64795432921028" y2="10" stroke="#f0ad4e" stroke-width="4" stroke-dasharray="69.64795432921028 10000" stroke-linecap="round"/>
         </g>
         
         <!-- Hard -->
