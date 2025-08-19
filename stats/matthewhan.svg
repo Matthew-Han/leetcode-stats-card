@@ -20,7 +20,7 @@
     </a>
     
     <!-- 排名 -->
-    <text x="480" y="40" fill="#808080" font-size="18" font-weight="bold" text-anchor="end">#9670</text>
+    <text x="480" y="40" fill="#808080" font-size="18" font-weight="bold" text-anchor="end">#9671</text>
     
     <!-- 左侧圆形进度条 -->
     <g transform="translate(30, 85)">
