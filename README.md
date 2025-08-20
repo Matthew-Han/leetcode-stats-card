@@ -1,15 +1,14 @@
-# LeetCode Status Card Generator
+# LeetCode Stats Card（极简动画版）
 
-一个用于生成 LeetCode 用户状态卡片的工具，可以显示用户的做题统计和最近活动。
+一个用于生成 LeetCode 个人卡片的工具。当前卡片为极简风格，包含用户名、站内排名、总解题数（圆环动画）与按难度划分的进度条（动画）。
 
 ## 功能特性
 
-- 🎯 显示用户总体做题进度和统计
-- 📊 按难度分类的做题统计（Easy/Medium/Hard）
-- 📝 显示最近5次提交记录
-- 🎨 多种主题支持（Light/Dark/Nord）
-- 🎨 现代化的卡片设计，参考 LeetCode-Stats-Card 项目
-- 🔄 自动更新数据
+- **极简信息**：仅显示用户名、排名、总解题数和难度进度条
+- **动画效果**：使用 SMIL 与渐显动画，圆环与三条进度条会按比例动态绘制
+- **纯 SVG 输出**：生成的 `stats/<username>.svg` 可直接在浏览器中打开
+- **元数据输出**：额外生成 `stats/<username>.json`，包含 `totalSolved` 等信息
+- **CI 友好**：工作流仅在解题总数增加时才提交代码，避免因排名波动触发提交
 
 ## 安装
 
@@ -17,95 +16,66 @@
 npm install
 ```
 
-## 使用方法
+## 使用
 
-### 1. 设置用户名
-
-可以通过环境变量设置 LeetCode 用户名：
+1) 设置用户名（可选，默认 `matthewhan`）
 
 ```bash
 export LEETCODE_USERNAME="your_username"
 ```
 
-或者直接修改 `scripts/generate_svg.js` 文件中的默认值：
-
-```javascript
-const USERNAME = process.env.LEETCODE_USERNAME || 'your_username';
-```
-
-### 2. 生成状态卡片
+2) 生成卡片
 
 ```bash
-# 使用默认主题（light）
+# 默认主题（light）
 npm run generate
 
-# 使用特定主题
-npm run generate:light    # 浅色主题
-npm run generate:dark     # 深色主题
-npm run generate:nord     # Nord主题
+# 指定主题（保留参数，当前样式以固定色为主）
+npm run generate:light
+npm run generate:dark
+npm run generate:nord
 
-# 或者通过环境变量设置主题
+# 或者直接用环境变量
 THEME=dark npm run generate
 ```
 
-生成的SVG文件将保存在 `stats/` 目录下。
+生成文件位于：
 
-### 3. 自动更新（GitHub Actions）
+- `stats/<username>.svg`
+- `stats/<username>.json`
 
-项目已配置 GitHub Actions 工作流，可以自动更新状态卡片。工作流文件位于 `.github/workflows/generate-leetcode-card.yml`。
+3) 在其他 README 中引用（示例）：
 
-## 输出示例
+```md
+![LeetCode Stats](https://raw.githubusercontent.com/Matthew-Han/leetcode-stats-card/main/stats/matthewhan.svg)
+```
 
-生成的SVG卡片包含以下信息：
+## GitHub Actions（自动更新）
 
-- **用户信息**: 用户名和排名
-- **总体进度**: 圆形进度条显示已解决的题目总数
-- **难度分布**: 三个难度级别的进度条
-- **最近活动**: 最近5次提交记录，包括：
-  - 提交日期
-  - 提交状态（AC/WA/TLE/MLE/RE/CE）
-  - 使用的编程语言
-  - 题目标题
+工作流：`.github/workflows/generate-leetcode-card.yml`
+
+- 定时与手动触发
+- 运行脚本生成 `stats/<username>.svg` 与 `stats/<username>.json`
+- 比较上一次提交的 `stats/<username>.json` 中 `totalSolved`
+- 仅当 `totalSolved` 增加时才 `git add stats && commit && push`
+- 需要在仓库 Secrets 配置 `PAT`
+
+## 配置项
+
+- `LEETCODE_USERNAME`：LeetCode 用户名（默认 `matthewhan`）
+- `THEME`：`light`|`dark`|`nord`（保留参数；当前样式主色通过内联样式定义，若需自定义可直接编辑 `scripts/generate_svg.js` 中的 `<style>` 部分）
+
+## 常见问题
+
+- **为什么看不到动画？**
+  - 某些平台的 SVG 渲染可能不播放 SMIL 动画。建议在浏览器直接打开生成的 SVG 或使用 raw 链接查看。
 
 ## 技术栈
 
-- Node.js
-- leetcode-query 库（用于获取 LeetCode 数据）
-- SVG 生成
-- 多主题支持系统
-
-## 自定义
-
-你可以修改 `scripts/generate_svg.js` 文件来自定义：
-
-- 卡片尺寸和布局
-- 颜色主题（支持 Light/Dark/Nord 三种预设主题）
-- 字体样式
-- 显示的信息内容
-- 添加新的主题
-
-### 添加新主题
-
-在 `THEMES` 对象中添加新的主题配置：
-
-```javascript
-const THEMES = {
-    // ... 现有主题
-    custom: {
-        card: '#your-color',
-        border: '#your-color',
-        text: '#your-color',
-        // ... 其他颜色配置
-    }
-};
-```
-
-## 注意事项
-
-- 需要网络连接来获取 LeetCode 数据
-- 某些用户数据可能需要登录才能访问
-- 建议不要过于频繁地调用 API 以避免被限制
+- Node.js（建议 20）
+- `leetcode-query`（拉取统计数据）
+- SVG + SMIL 动画
 
 ## 许可证
 
-MIT License 
+MIT License

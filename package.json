@@ -1,6 +1,7 @@
 {
   "name": "leetcode-stats-card",
   "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "generate": "node scripts/generate_svg.js",
