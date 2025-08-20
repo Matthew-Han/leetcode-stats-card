@@ -1,12 +1,19 @@
 
 <svg width="500" height="200" viewBox="0 0 500 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="leetcode-stats-title">
     <title id="leetcode-stats-title">matthewhan | LeetCode Stats Card</title>
-    
+    <style>
+      @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+      @keyframes drawBar { from { stroke-dasharray: 0 10000 } to { stroke-dasharray: VAR_LEN 10000 } }
+      @keyframes drawRing { from { stroke-dashoffset: 251.32741228718345 } to { stroke-dashoffset: 191.41652567866595 } }
+      #username-text, #ranking { opacity: 0; animation: fadeIn 0.4s ease 0.15s forwards }
+      #icon { opacity: 0; animation: fadeIn 0.4s ease 0s forwards }
+    </style>
+
     <!-- 卡片背景 -->
     <rect x="0.5" y="0.5" rx="4" width="499" height="199" fill="#fff" stroke="#e5e5e5" stroke-width="1"/>
     
     <!-- LeetCode图标 -->
-    <g transform="translate(20, 15) scale(0.27)">
+    <g id="icon" transform="translate(20, 15) scale(0.27)">
         <g stroke="none" fill="#000000" fill-rule="evenodd">
             <path d="M67.506,83.066 C70.000,80.576 74.037,80.582 76.522,83.080 C79.008,85.578 79.002,89.622 76.508,92.112 L65.435,103.169 C55.219,113.370 38.560,113.518 28.172,103.513 C28.112,103.455 23.486,98.920 8.227,83.957 C-1.924,74.002 -2.936,58.074 6.616,47.846 L24.428,28.774 C33.910,18.621 51.387,17.512 62.227,26.278 L78.405,39.362 C81.144,41.577 81.572,45.598 79.361,48.342 C77.149,51.087 73.135,51.515 70.395,49.300 L54.218,36.217 C48.549,31.632 38.631,32.262 33.739,37.500 L15.927,56.572 C11.277,61.552 11.786,69.574 17.146,74.829 C28.351,85.816 36.987,94.284 36.997,94.294 C42.398,99.495 51.130,99.418 56.433,94.123 L67.506,83.066 Z" fill="#FFA116"/>
             <path d="M49.412,2.023 C51.817,-0.552 55.852,-0.686 58.423,1.722 C60.994,4.132 61.128,8.173 58.723,10.749 L15.928,56.572 C11.277,61.551 11.786,69.573 17.145,74.829 L36.909,94.209 C39.425,96.676 39.468,100.719 37.005,103.240 C34.542,105.760 30.506,105.804 27.990,103.336 L8.226,83.956 C-1.924,74.002 -2.936,58.074 6.617,47.846 L49.412,2.023 Z" fill="#000000"/>
@@ -16,19 +23,21 @@
     
     <!-- 用户名 -->
     <a href="https://leetcode.cn/matthewhan/" target="_blank">
-        <text x="65" y="40" fill="#000000" font-size="24" font-weight="bold">元末 💿</text>
+        <text id="username-text" x="65" y="40" fill="#000000" font-size="24" font-weight="bold">元末 💿</text>
     </a>
     
     <!-- 排名 -->
-    <text x="480" y="40" fill="#808080" font-size="18" font-weight="bold" text-anchor="end">#9671</text>
+    <text id="ranking" x="480" y="40" fill="#808080" font-size="18" font-weight="bold" text-anchor="end">#9671</text>
     
     <!-- 左侧圆形进度条 -->
     <g transform="translate(30, 85)">
         <circle cx="40" cy="40" r="40" fill="none" stroke="#e5e5e5" stroke-width="6"/>
         <circle cx="40" cy="40" r="40" fill="none" stroke="#ffa116" stroke-width="6" 
                 stroke-dasharray="251.32741228718345" 
-                stroke-dashoffset="191.41652567866595"
-                transform="rotate(-90 40 40)" stroke-linecap="round"/>
+                stroke-dashoffset="251.32741228718345"
+                transform="rotate(-90 40 40)" stroke-linecap="round">
+            <animate attributeName="stroke-dashoffset" from="251.32741228718345" to="191.41652567866595" dur="0.8s" begin="0.2s" fill="freeze" />
+        </circle>
         <text x="40" y="40" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">964</text>
     </g>
     
@@ -39,7 +48,9 @@
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Easy</text>
             <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">438 / 1010</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="130.0990099009901" y2="10" stroke="#5cb85c" stroke-width="4" stroke-dasharray="130.0990099009901 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="300" y2="10" stroke="#5cb85c" stroke-width="4" stroke-dasharray="0 10000" stroke-linecap="round">
+              <animate attributeName="stroke-dasharray" from="0 10000" to="130.0990099009901 10000" dur="0.6s" begin="0.35s" fill="freeze" />
+            </line>
         </g>
         
         <!-- Medium -->
@@ -47,7 +58,9 @@
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Medium</text>
             <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">488 / 2102</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="69.64795432921028" y2="10" stroke="#f0ad4e" stroke-width="4" stroke-dasharray="69.64795432921028 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="300" y2="10" stroke="#f0ad4e" stroke-width="4" stroke-dasharray="0 10000" stroke-linecap="round">
+              <animate attributeName="stroke-dasharray" from="0 10000" to="69.64795432921028 10000" dur="0.6s" begin="0.55s" fill="freeze" />
+            </line>
         </g>
         
         <!-- Hard -->
@@ -55,7 +68,9 @@
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Hard</text>
             <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">38 / 932</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="12.23175965665236" y2="10" stroke="#d9534f" stroke-width="4" stroke-dasharray="12.23175965665236 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="300" y2="10" stroke="#d9534f" stroke-width="4" stroke-dasharray="0 10000" stroke-linecap="round">
+              <animate attributeName="stroke-dasharray" from="0 10000" to="12.23175965665236 10000" dur="0.6s" begin="0.75s" fill="freeze" />
+            </line>
         </g>
     </g>
 </svg>

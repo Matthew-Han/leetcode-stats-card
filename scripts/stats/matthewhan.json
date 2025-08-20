@@ -1,0 +1,19 @@
+{
+  "username": "matthewhan",
+  "totalSolved": 964,
+  "totalQuestions": 4044,
+  "easy": {
+    "solved": 438,
+    "total": 1010
+  },
+  "medium": {
+    "solved": 488,
+    "total": 2102
+  },
+  "hard": {
+    "solved": 38,
+    "total": 932
+  },
+  "ranking": 9670,
+  "generatedAt": "2025-08-19T10:38:49.285Z"
+}

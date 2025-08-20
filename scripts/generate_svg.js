@@ -7,6 +7,7 @@ import path from 'path';
 const USERNAME = process.env.LEETCODE_USERNAME || 'matthewhan';
 const OUT_DIR = path.resolve(process.cwd(), 'stats');
 const OUT_FILE = path.join(OUT_DIR, `${USERNAME}.svg`);
+const OUT_JSON_FILE = path.join(OUT_DIR, `${USERNAME}.json`);
 
 // 主题配置
 const THEMES = {
@@ -165,12 +166,19 @@ function buildSVG(data) {
     return `
 <svg width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="leetcode-stats-title">
     <title id="leetcode-stats-title">${esc(username)} | LeetCode Stats Card</title>
+    <style>
+      @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+      @keyframes drawBar { from { stroke-dasharray: 0 10000 } to { stroke-dasharray: VAR_LEN 10000 } }
+      @keyframes drawRing { from { stroke-dashoffset: ${circumference} } to { stroke-dashoffset: ${strokeDashoffset} } }
+      #username-text, #ranking { opacity: 0; animation: fadeIn 0.4s ease 0.15s forwards }
+      #icon { opacity: 0; animation: fadeIn 0.4s ease 0s forwards }
+    </style>
     
     <!-- 卡片背景 -->
     <rect x="0.5" y="0.5" rx="4" width="${cardWidth - 1}" height="${cardHeight - 1}" fill="#fff" stroke="#e5e5e5" stroke-width="1"/>
     
     <!-- LeetCode图标 -->
-    <g transform="translate(20, 15) scale(0.27)">
+    <g id="icon" transform="translate(20, 15) scale(0.27)">
         <g stroke="none" fill="#000000" fill-rule="evenodd">
             <path d="M67.506,83.066 C70.000,80.576 74.037,80.582 76.522,83.080 C79.008,85.578 79.002,89.622 76.508,92.112 L65.435,103.169 C55.219,113.370 38.560,113.518 28.172,103.513 C28.112,103.455 23.486,98.920 8.227,83.957 C-1.924,74.002 -2.936,58.074 6.616,47.846 L24.428,28.774 C33.910,18.621 51.387,17.512 62.227,26.278 L78.405,39.362 C81.144,41.577 81.572,45.598 79.361,48.342 C77.149,51.087 73.135,51.515 70.395,49.300 L54.218,36.217 C48.549,31.632 38.631,32.262 33.739,37.500 L15.927,56.572 C11.277,61.552 11.786,69.574 17.146,74.829 C28.351,85.816 36.987,94.284 36.997,94.294 C42.398,99.495 51.130,99.418 56.433,94.123 L67.506,83.066 Z" fill="#FFA116"/>
             <path d="M49.412,2.023 C51.817,-0.552 55.852,-0.686 58.423,1.722 C60.994,4.132 61.128,8.173 58.723,10.749 L15.928,56.572 C11.277,61.551 11.786,69.573 17.145,74.829 L36.909,94.209 C39.425,96.676 39.468,100.719 37.005,103.240 C34.542,105.760 30.506,105.804 27.990,103.336 L8.226,83.956 C-1.924,74.002 -2.936,58.074 6.617,47.846 L49.412,2.023 Z" fill="#000000"/>
@@ -180,19 +188,21 @@ function buildSVG(data) {
     
     <!-- 用户名 -->
     <a href="https://leetcode.cn/${username}/" target="_blank">
-        <text x="65" y="40" fill="#000000" font-size="24" font-weight="bold">${esc(realname || username)}</text>
+        <text id="username-text" x="65" y="40" fill="#000000" font-size="24" font-weight="bold">${esc(realname || username)}</text>
     </a>
     
     <!-- 排名 -->
-    <text x="480" y="40" fill="#808080" font-size="18" font-weight="bold" text-anchor="end">#${esc(ranking || 'N/A')}</text>
+    <text id="ranking" x="480" y="40" fill="#808080" font-size="18" font-weight="bold" text-anchor="end">#${esc(ranking || 'N/A')}</text>
     
     <!-- 左侧圆形进度条 -->
     <g transform="translate(30, 85)">
         <circle cx="40" cy="40" r="40" fill="none" stroke="#e5e5e5" stroke-width="6"/>
         <circle cx="40" cy="40" r="40" fill="none" stroke="#ffa116" stroke-width="6" 
                 stroke-dasharray="${strokeDasharray}" 
-                stroke-dashoffset="${strokeDashoffset}"
-                transform="rotate(-90 40 40)" stroke-linecap="round"/>
+                stroke-dashoffset="${circumference}"
+                transform="rotate(-90 40 40)" stroke-linecap="round">
+            <animate attributeName="stroke-dashoffset" from="${circumference}" to="${strokeDashoffset}" dur="0.8s" begin="0.2s" fill="freeze" />
+        </circle>
         <text x="40" y="40" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">${totalSolved}</text>
     </g>
     
@@ -203,7 +213,9 @@ function buildSVG(data) {
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Easy</text>
             <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">${easy.solved} / ${easy.total}</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="${easyProgress}" y2="10" stroke="#5cb85c" stroke-width="4" stroke-dasharray="${easyProgress} 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="300" y2="10" stroke="#5cb85c" stroke-width="4" stroke-dasharray="0 10000" stroke-linecap="round">
+              <animate attributeName="stroke-dasharray" from="0 10000" to="${easyProgress} 10000" dur="0.6s" begin="0.35s" fill="freeze" />
+            </line>
         </g>
         
         <!-- Medium -->
@@ -211,7 +223,9 @@ function buildSVG(data) {
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Medium</text>
             <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">${medium.solved} / ${medium.total}</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="${mediumProgress}" y2="10" stroke="#f0ad4e" stroke-width="4" stroke-dasharray="${mediumProgress} 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="300" y2="10" stroke="#f0ad4e" stroke-width="4" stroke-dasharray="0 10000" stroke-linecap="round">
+              <animate attributeName="stroke-dasharray" from="0 10000" to="${mediumProgress} 10000" dur="0.6s" begin="0.55s" fill="freeze" />
+            </line>
         </g>
         
         <!-- Hard -->
@@ -219,7 +233,9 @@ function buildSVG(data) {
             <text x="0" y="0" fill="#000000" font-size="18" font-weight="bold">Hard</text>
             <text x="300" y="0" fill="#808080" font-size="16" font-weight="bold" text-anchor="end">${hard.solved} / ${hard.total}</text>
             <line x1="0" y1="10" x2="300" y2="10" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-            <line x1="0" y1="10" x2="${hardProgress}" y2="10" stroke="#d9534f" stroke-width="4" stroke-dasharray="${hardProgress} 10000" stroke-linecap="round"/>
+            <line x1="0" y1="10" x2="300" y2="10" stroke="#d9534f" stroke-width="4" stroke-dasharray="0 10000" stroke-linecap="round">
+              <animate attributeName="stroke-dasharray" from="0 10000" to="${hardProgress} 10000" dur="0.6s" begin="0.75s" fill="freeze" />
+            </line>
         </g>
     </g>
 </svg>
@@ -251,6 +267,22 @@ async function writeIfChanged(filePath, content) {
     console.log(`SVG written to ${filePath}`);
 }
 
+// 写元数据 JSON（如 totalSolved），用于工作流判断是否需要 push
+async function writeJsonIfChanged(filePath, obj) {
+    const content = JSON.stringify(obj, null, 2);
+    try {
+        const existingContent = await fs.readFile(filePath, 'utf8');
+        if (existingContent === content) {
+            console.log('JSON content unchanged. Skipping file write.');
+            return;
+        }
+    } catch (e) {
+        // 文件不存在，继续写入
+    }
+    await fs.writeFile(filePath, content);
+    console.log(`JSON written to ${filePath}`);
+}
+
 // 主函数
 async function main() {
     try {
@@ -261,6 +293,19 @@ async function main() {
 
         const svgContent = buildSVG(userData);
         await writeIfChanged(OUT_FILE, svgContent);
+
+        // 写入元数据 JSON，供 CI 判断是否 push
+        const meta = {
+            username: userData.username,
+            totalSolved: userData.totalSolved,
+            totalQuestions: userData.totalQuestions,
+            easy: userData.easy,
+            medium: userData.medium,
+            hard: userData.hard,
+            ranking: userData.ranking,
+            generatedAt: new Date().toISOString()
+        };
+        await writeJsonIfChanged(OUT_JSON_FILE, meta);
 
         console.log('Operation completed successfully.');
     } catch (e) {

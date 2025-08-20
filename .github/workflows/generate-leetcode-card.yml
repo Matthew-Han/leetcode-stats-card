@@ -26,26 +26,44 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. Generate LeetCode SVG
+      # 4. Generate LeetCode SVG & metadata
       - name: Generate LeetCode SVG
         env:
           LEETCODE_USERNAME: 'matthewhan'
-          THEME: 'light'
+          LEETCODE_US_USERNAME: 'MatthewHan'
         run: |
           node scripts/generate_svg.js
-          echo "Stats SVG generated for user ${LEETCODE_USERNAME} with theme ${THEME}"
+          echo "Stats SVG generated for user ${LEETCODE_USERNAME}"
 
-      # 5. Commit & push only if SVG changed
+      # 5. Commit & push only when solved count increases
       - name: Commit and push changes
         env:
           PAT_TOKEN: ${{ secrets.PAT }}
         run: |
           git config user.name "matthew-han"
           git config user.email "837204579@qq.com"
-          git add stats
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update leetcode stats svg"
-            git push https://${PAT_TOKEN}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
+          # 从上一次提交中读取旧的 totalSolved（如果文件不存在则为 0）
+          old_total=$(git show HEAD:stats/${LEETCODE_USERNAME}.json 2>/dev/null | node -pe "try{(JSON.parse(fs.readFileSync(0,'utf8')).totalSolved)||0}catch(e){0}" || echo 0)
+
+          # 读取新元数据（脚本已生成到 stats）
+          new_json="stats/${LEETCODE_USERNAME}.json"
+          if [ ! -f "$new_json" ]; then
+            echo "Metadata json not found, skipping commit."
+            exit 0
+          fi
+          new_total=$(cat "$new_json" | node -pe "try{(JSON.parse(fs.readFileSync(0,'utf8')).totalSolved)||0}catch(e){0}" 2>/dev/null || echo 0)
+
+          echo "Old totalSolved: $old_total | New totalSolved: $new_total"
+
+          # 仅当解题数增加时才提交（同时包含 SVG 与 JSON）
+          if [ "$new_total" -gt "$old_total" ]; then
+            git add stats
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: update leetcode stats (totalSolved $old_total -> $new_total)"
+              git push https://${PAT_TOKEN}@github.com/Matthew-Han/leetcode-stats-card.git HEAD:main
+            else
+              echo "No file changes to commit."
+            fi
           else
-            echo "No changes in SVG, skipping commit."
+            echo "Solved count not increased. Skip pushing."
           fi
