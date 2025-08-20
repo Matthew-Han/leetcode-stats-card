@@ -8,7 +8,7 @@
       #username-text, #ranking { opacity: 0; animation: fadeIn 0.4s ease 0.15s forwards }
       #icon { opacity: 0; animation: fadeIn 0.4s ease 0s forwards }
     </style>
-
+    
     <!-- 卡片背景 -->
     <rect x="0.5" y="0.5" rx="4" width="499" height="199" fill="#fff" stroke="#e5e5e5" stroke-width="1"/>
     

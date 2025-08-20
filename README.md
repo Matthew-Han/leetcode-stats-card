@@ -70,12 +70,6 @@ THEME=dark npm run generate
 - **为什么看不到动画？**
   - 某些平台的 SVG 渲染可能不播放 SMIL 动画。建议在浏览器直接打开生成的 SVG 或使用 raw 链接查看。
 
-## 技术栈
-
-- Node.js（建议 20）
-- `leetcode-query`（拉取统计数据）
-- SVG + SMIL 动画
-
 ## 许可证
 
 MIT License
