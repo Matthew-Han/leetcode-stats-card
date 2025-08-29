@@ -1,19 +1,19 @@
 {
   "username": "matthewhan",
-  "totalSolved": 965,
+  "totalSolved": 966,
   "totalQuestions": 4050,
   "easy": {
     "solved": 438,
     "total": 1012
   },
   "medium": {
-    "solved": 489,
+    "solved": 490,
     "total": 2105
   },
   "hard": {
     "solved": 38,
     "total": 933
   },
-  "ranking": 9709,
-  "generatedAt": "2025-08-27T17:57:14.741Z"
+  "ranking": 9682,
+  "generatedAt": "2025-08-29T15:41:05.365Z"
 }
